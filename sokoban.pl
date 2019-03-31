@@ -58,23 +58,23 @@ meta_alcanzada(Locs) :- foreach(member(Loc, Locs), meta(Loc)).
 % Moverse a una posición que no esté ocupada por una caja o no es una casilla peligrosa
 
 dest_correcto(X, Cajas) :-
-  \+ member(X, Cajas),
-  (corner(X)->meta(X);true),
-  \+ stuck(X),
-  foreach(member(Caja, Cajas), \+ stuck(X, Caja)).
+	\+ member(X, Cajas),
+	(corner(X)->meta(X);true),
+	\+ stuck(X),
+	foreach(member(Caja, Cajas), \+ stuck(X, Caja)).
 	
 % Acción de movimiento del Robot
 
 accion(Robot, Cajas, move(Caja, Dir), NewRobot, NewCajas) :-
-  select(Caja, Cajas, CajasRestantes),
-  adyacente(Caja, SigLoc, Dir),
-  dest_correcto(SigLoc, CajasRestantes),
-  adyacente(PushPosition, Caja, Dir),
+	select(Caja, Cajas, CajasRestantes),
+	adyacente(Caja, SigLoc, Dir),
+	dest_correcto(SigLoc, CajasRestantes),
+	adyacente(PushPosition, Caja, Dir),
 	llegable(Robot, PushPosition, Cajas),
 	elegir_dest(Robot,Caja,Dir,NewRobot,NewPosicion,NewCajas),
-  subtract(Cajas, [Caja], TempList),
-  adyacente(Caja, NewPosicion, Dir),
-  append(TempList, [NewPosicion], NewCajas).
+	subtract(Cajas, [Caja], TempList),
+	adyacente(Caja, NewPosicion, Dir),
+	append(TempList, [NewPosicion], NewCajas).
 	
 % Elegir dirección destino y posición destino pasa a ser la nueva localización
 
@@ -100,12 +100,12 @@ llegable(Cas1,Cas2,BoxLocs) :-
 % Si el estado final es igual al estado final, acaba o recorremos nuevos estados
 
 resolver_o_avanzar(Robot, Cajas, _Cola, [], Len) :-
-  estado_final(Robot, Cajas),
+	estado_final(Robot, Cajas),
 	Len=0.
 
 resolver_o_avanzar(Robot, Cajas, Cola, [Move|Moves], Len) :-
-  accion(Robot, Cajas, Move, NewRobot, NewCajas),
-  resolver_o_avanzar(NewRobot, NewCajas, [NewRobot, NewCajas|Cola], Moves, Len1),
+  	accion(Robot, Cajas, Move, NewRobot, NewCajas),
+  	resolver_o_avanzar(NewRobot, NewCajas, [NewRobot, NewCajas|Cola], Moves, Len1),
 	Len is Len1+1.
 
 % Estado inicial
@@ -115,7 +115,7 @@ estado_inicial(7, [5, 6]).
 % Estado final
 
 estado_final(Robot, Cajas) :-
-  meta_alcanzada(Cajas), !.
+  	meta_alcanzada(Cajas), !.
 
 % EJECUCION:
 % resolver(X, Len).
@@ -129,9 +129,9 @@ estado_final(Robot, Cajas) :-
 	
 resolver(Solucion, Len) :-
 	estado_inicial(Robot, Cajas),
-  writeln('Problema Robot'),
-  writeln('============='),
+  	writeln('Problema Robot'),
+  	writeln('============='),
 	write('Estado inicial: Robot en la casilla '),write(Robot),write(' y cajas en las casillas '),writeln(Cajas),
 	writeln('Solucion final: '),
-  resolver_o_avanzar(Robot, Cajas, [Robot, Cajas], Solucion, Len).
+  	resolver_o_avanzar(Robot, Cajas, [Robot, Cajas], Solucion, Len).
 
